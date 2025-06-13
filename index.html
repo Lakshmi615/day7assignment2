@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Gallery</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .header {
+            width: 100%;
+            background-color: #333;
+            color: #fff;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 1.8em;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            border-top: 5px solid #FFD700;
+            border-bottom: 5px solid #FFD700;
+            box-sizing: border-box;
+        }
+        .gallery-container {
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+            max-width: 900px;
+            width: 90%;
+            box-sizing: border-box;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            justify-content: center;
+        }
+        .gallery-item {
+            border: 1px solid black;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 180px;
+            position: relative;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 10px;
+        }
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+        .gallery-item.placeholder {
+            background-color: #f9f9f9;
+            border: 1px solid black;
+            color: #aaa;
+            font-size: 1.2em;
+            text-align: center;
+            line-height: 180px;
+            border-radius: 12px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            max-width: 90%;
+            max-height: 90vh;
+            display: block;
+            margin: auto;
+        }
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        Photo Gallery
+    </div>
+    <div class="gallery-container">
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="https://tse3.mm.bing.net/th?id=OIP.Hs92i6Zb1jJn8hST0HpaZgHaFj&pid=Api&P=0&h=180" alt="Colorful Pinwheel">
+                </div>
+            <div class="gallery-item">
+                <img src="https://tse4.mm.bing.net/th?id=OIP.SFvlzOKjQvUVK6N13QqgmAHaFy&pid=Api&P=0&h=180" alt="Business Meeting">
+            </div>
+            <div class="gallery-item">
+                <img src="https://tse4.mm.bing.net/th?id=OIP.VYjPx_4qWtq7tHRlRoBDVQHaE7&pid=Api&P=0&h=180" alt="Abstract Feather">
+            </div>
+            <div class="gallery-item placeholder">
+                Empty Slot
+            </div>
+            <div class="gallery-item placeholder">
+                Empty Slot
+            </div>
+            <div class="gallery-item">
+                <img src="https://tse3.mm.bing.net/th?id=OIP.Hs92i6Zb1jJn8hST0HpaZgHaFj&pid=Api&P=0&h=180" alt="Colorful Pinwheel 2">
+            </div>
+            <div class="gallery-item">
+                <img src="https://tse4.mm.bing.net/th?id=OIP.SFvlzOKjQvUVK6N13QqgmAHaFy&pid=Api&P=0&h=180" alt="Business Meeting 2">
+            </div>
+            <div class="gallery-item placeholder">
+                Empty Slot
+            </div>
+            </div>
+    </div>
+    <div id="imageModal" class="modal">
+        <span class="close-button">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+    <script>
+        const galleryItems = document.querySelectorAll('.gallery-item img');
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const closeButton = document.querySelector('.close-button');
+        galleryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                modal.style.display = 'flex';
+                modalImage.src = item.src;
+                modalImage.alt = item.alt;
+            });
+        });
+        closeButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && modal.style.display === 'flex') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
